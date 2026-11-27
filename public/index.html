@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NK3Tube</title>
+<style>
+:root{--bg:#0f0f0f;--s1:#181818;--s2:#272727;--line:#303030;--t:#f1f1f1;--m:#aaa;--acc:#ff4e45}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:14px/1.5 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+a{color:inherit;text-decoration:none}
+button,select,input{font:inherit;color:inherit}
+h1,h2,h3{margin:.4em 0}
+header{position:fixed;inset:0 0 auto 0;height:56px;display:flex;align-items:center;gap:14px;padding:0 16px;background:rgba(15,15,15,.94);backdrop-filter:blur(8px);z-index:20;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:19px;cursor:pointer;white-space:nowrap}
+.logo span{background:linear-gradient(120deg,#ff4e45,#ff9a3c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.search{flex:1;max-width:620px;margin:0 auto;display:flex}
+.search input{flex:1;min-width:0;background:#121212;border:1px solid var(--line);border-radius:999px 0 0 999px;padding:9px 18px;outline:none}
+.search input:focus{border-color:#3ea6ff}
+.search button{background:var(--s2);border:1px solid var(--line);border-left:0;border-radius:0 999px 999px 0;padding:0 20px;cursor:pointer}
+nav{position:fixed;top:56px;bottom:0;left:0;width:200px;padding:10px;overflow-y:auto;border-right:1px solid var(--line);background:var(--bg)}
+nav a{display:block;padding:10px 12px;border-radius:10px;color:#ddd;margin-bottom:2px}
+nav a:hover{background:var(--s2)}
+nav a.on{background:var(--s2);color:#fff;font-weight:700}
+nav h4{margin:14px 12px 6px;color:var(--m);font-size:12px;font-weight:600}
+main{margin:56px 0 0 200px;padding:22px 26px 60px;min-height:calc(100vh - 56px)}
+@media(max-width:860px){nav{display:none}main{margin-left:0;padding:16px 12px}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px 16px}
+.grid.sg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.card{cursor:pointer;border-radius:14px}
+.card:hover img{transform:scale(1.03)}
+.th{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--s1)}
+.short .th{aspect-ratio:9/16}
+.th img{width:100%;height:100%;object-fit:cover;transition:transform .25s}
+.len{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.8);padding:1px 6px;border-radius:5px;font-size:12px;font-weight:600}
+.info{padding:10px 2px;display:flex;flex-direction:column;gap:2px}
+.ct{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cm{color:var(--m);font-size:13px}
+a.cm:hover{color:#fff}
+.chc{grid-column:1/-1;display:flex;gap:16px;align-items:center;padding:12px 16px;border-radius:14px;background:var(--s1)}
+.chc:hover{background:var(--s2)}
+.chc img{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none}
+.row{display:flex;gap:12px;align-items:center;padding:8px;border-radius:10px;cursor:pointer;margin-bottom:6px}
+.row:hover{background:var(--s1)}
+.row .rth{width:200px;min-width:200px}
+.tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.tab{padding:7px 14px;border-radius:999px;background:var(--s2)}
+.tab.on{background:var(--t);color:#000}
+.sk{aspect-ratio:16/9;border-radius:12px;background:linear-gradient(90deg,#181818,#262626,#181818);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.err{color:#ff8a80}
+.more{text-align:center;margin:26px 0}
+.btn,.ctrl select{background:var(--s2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chead .banner{height:160px;border-radius:16px;background:linear-gradient(120deg,#2a1b3d,#14213d) center/cover;margin-bottom:16px}
+.cinfo{display:flex;gap:18px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.cinfo>div{flex:1;min-width:200px}
+.cav{width:96px;height:96px;border-radius:50%;object-fit:cover}
+h1{font-size:24px}
+.watch{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;max-width:1500px}
+@media(max-width:1100px){.watch{grid-template-columns:1fr}}
+#ph{aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#v{width:100%;height:100%;background:#000}
+.ld{color:var(--m)}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.ctrl label{color:var(--m);font-size:13px}
+.vt{font-size:19px;margin:6px 0 10px}
+.chrow{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avb{font-weight:700}
+.sub{margin-left:auto;background:#fff;color:#000;border:0;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer}
+.sub.on{background:var(--s2);color:var(--t)}
+.desc{background:var(--s2);border-radius:12px;padding:12px 14px;margin:12px 0 20px}
+.dmeta{font-weight:700;margin-bottom:6px}
+.dtxt{white-space:pre-wrap;word-break:break-word;cursor:pointer}
+.dtxt.clamp{max-height:4.6em;overflow:hidden}
+.dl{position:relative}
+.menu{position:absolute;top:110%;left:0;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:6px;min-width:260px;z-index:5;box-shadow:0 10px 30px #000}
+.menu a{display:block;padding:9px 12px;border-radius:8px}
+.menu a:hover{background:var(--s2)}
+.menu h5{margin:8px 12px 4px;color:var(--m);font-size:12px}
+.rel .rc{display:flex;gap:10px;cursor:pointer;margin-bottom:12px;border-radius:10px}
+.rel .rc:hover{background:var(--s1)}
+.rth{position:relative;width:168px;min-width:168px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--s1)}
+.rth img{width:100%;height:100%;object-fit:cover}
+.rinfo{min-width:0}
+.ct2{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cmt{display:flex;gap:12px;margin:14px 0;white-space:pre-wrap;word-break:break-word}
+.av2{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff4e45,#ff9a3c);display:grid;place-items:center;font-weight:700;flex:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="go('/')">▶ <span>NK3</span>Tube</div>
+  <form class="search" id="sf"><input id="sq" placeholder="検索" autocomplete="off"><button type="submit">🔍</button></form>
+</header>
+<nav>
+  <a href="#/" data-r="/">🏠 ホーム</a>
+  <a href="#/shorts" data-r="/shorts">▣ ショート</a>
+  <h4>ライブラリ</h4>
+  <a href="#/subs" data-r="/subs">📺 登録チャンネル</a>
+  <a href="#/history" data-r="/history">🕘 履歴</a>
+</nav>
+<main id="app"></main>
+<script>
+const $ = s => document.querySelector(s);
+const app = $('#app');
+let seq = 0;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const get = async p => { const r = await fetch(p); const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); return j; };
+const store = (k, v) => v === undefined ? JSON.parse(localStorage.getItem(k) || '[]') : localStorage.setItem(k, JSON.stringify(v));
+const go = h => { location.hash = h; };
+const thumb = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const meta = (...a) => a.filter(Boolean).map(esc).join(' ・ ');
+const skel = n => `<div class="grid">${'<div class="sk"></div>'.repeat(n)}</div>`;
+const fail = e => { app.innerHTML = `<p class="err">読み込みに失敗しました：${esc(e.message)}</p>`; };
+const tabsHtml = (items, cur, base) => `<div class="tabs">${items.map(([k, l]) => `<a class="tab ${k === cur ? 'on' : ''}" href="${base(k)}">${l}</a>`).join('')}</div>`;
+
+const vcard = (v, cls = '') => `<div class="card ${cls}" onclick="go('/watch?v=${v.videoId}')"><div class="th"><img loading="lazy" src="${thumb(v.videoId)}" alt=""><span class="len">${esc(v.lengthText)}</span></div><div class="info"><div class="ct">${esc(v.title)}</div>${v.authorId ? `<a class="cm" href="#/channel?id=${v.authorId}" onclick="event.stopPropagation()">${esc(v.author)}</a>` : `<div class="cm">${esc(v.author)}</div>`}<div class="cm">${meta(v.viewCountText, v.publishedText)}</div></div></div>`;
+const chcard = c => `<a class="chc" href="#/channel?id=${c.channelId}"><img src="${esc(c.thumbnails?.slice(-1)[0]?.url)}" alt=""><div><div class="ct">${esc(c.title)}</div><div class="cm">${meta(c.handle, c.subscriberText)}</div><div class="cm">${esc(c.description)}</div></div></a>`;
+const plcard = p => `<div class="card"><div class="th"><img loading="lazy" src="${esc(p.thumbnails?.slice(-1)[0]?.url)}" alt=""><span class="len">${esc(p.videoCount)}</span></div><div class="info"><div class="ct">${esc(p.title)}</div><div class="cm">再生リスト</div></div></div>`;
+const renderItem = r => r.type === 'channel' ? chcard(r) : r.type === 'playlist' ? plcard(r) : vcard(r, r.type === 'short' ? 'short' : '');
+
+async function homePage() {
+  const g = ++seq; app.innerHTML = skel(12);
+  try {
+    const d = await get('/api/v1/home'); if (g !== seq) return;
+    app.innerHTML = `<h2>おすすめ</h2><div class="grid">${d.videos.map(v => vcard(v)).join('') || '<p>動画がありません</p>'}</div>`;
+  } catch (e) { if (g === seq) fail(e); }
+}
+
+async function searchPage(q) {
+  const term = q.get('q') || '', type = q.get('type') || '', g = ++seq;
+  $('#sq').value = term;
+  const tabs = tabsHtml([['', 'すべて'], ['video', '動画'], ['channel', 'チャンネル'], ['playlist', '再生リスト']], type,
+    k => `#/search?q=${encodeURIComponent(term)}&type=${k}`);
+  if (!term) { app.innerHTML = tabs + '<p>キーワードを入力してください</p>'; return; }
+  app.innerHTML = tabs + skel(8);
+  try {
+    const d = await get(`/api/v1/search?q=${encodeURIComponent(term)}&type=${type}`); if (g !== seq) return;
+    app.innerHTML = tabs + (d.results.length ? `<div class="grid">${d.results.map(renderItem).join('')}</div>` : '<p>結果がありません</p>');
+  } catch (e) { if (g === seq) fail(e); }
+}
+
+async function watchPage(q) {
+  const id = q.get('v') || '', g = ++seq;
+  if (!id) return homePage();
+  app.innerHTML = `<div class="watch"><div class="main"><div id="ph"><div class="ld">読み込み中…</div></div><div class="ctrl" id="ctrl"></div><h1 class="vt" id="vt"></h1><div id="vi"></div><div class="desc" id="desc" hidden></div><div id="cmt"></div></div><aside class="rel" id="rel"></aside></div>`;
+  let m, st;
+  try { [m, st] = await Promise.all([get(`/api/v1/videos/${id}`), get(`/api/v1/stream/${id}`)]); }
+  catch (e) { if (g === seq) $('#ph').innerHTML = `<div class="ld">再生できません：${esc(e.message)}</div>`; return; }
+  if (g !== seq) return;
+  document.title = `${m.title} - NK3Tube`;
+  $('#vt').textContent = m.title;
+
+  const vids = st.formats.filter(f => f.hasVideo && f.height);
+  const heights = [...new Set(vids.map(f => f.height))].sort((a, b) => b - a);
+  const pick = hh => { const c = vids.filter(f => f.height === hh); return c.find(f => !f.hasAudio && f.ext === 'mp4') || c.find(f => !f.hasAudio) || c[0]; };
+  const opts = heights.map(pick);
+  const audios = st.formats.filter(f => f.hasAudio && !f.hasVideo).sort((a, b) => (b.ext === 'm4a') - (a.ext === 'm4a') || b.bitrate - a.bitrate);
+  const bestA = audios[0];
+  if (!opts.length) {
+    $('#ph').innerHTML = '<div class="ld">この動画の再生可能な形式が見つかりません</div>';
+  } else {
+    const def = opts.find(f => f.height <= 720) || opts[0];
+    const rawOpts = opts.filter(f => f.hasAudio);
+    const adaptOpts = opts.filter(f => !f.hasAudio);
+    $('#ph').innerHTML = '<video id="v" controls playsinline></video><audio id="a" preload="auto"></audio>';
+    $('#ctrl').innerHTML = `
+      <label>画質 <select id="qsel">${opts.map(f => `<option value="${f.itag}" ${f === def ? 'selected' : ''}>${f.height}p${f.fps > 30 ? f.fps : ''}</option>`).join('')}</select></label>
+      <label>速度 <select id="sp">${[0.5, 0.75, 1, 1.25, 1.5, 2].map(s => `<option value="${s}" ${s === 1 ? 'selected' : ''}>${s}x</option>`).join('')}</select></label>
+      <div class="dl"><button class="btn" id="dlb">⬇ ダウンロード</button>
+        <div class="menu" id="menu" hidden>
+          ${st.merge && bestA ? `<h5>映像＋音声（結合・高画質）</h5>${opts.map(f => `<a href="/api/v1/merge/${id}?v=${f.itag}&a=${bestA.itag}">${f.height}p</a>`).join('')}` : ''}
+          ${rawOpts.length ? `<h5>映像＋音声（そのまま）</h5>${rawOpts.map(f => `<a href="/api/v1/play/${id}?itag=${f.itag}&dl=1">${f.height}p（${esc(f.ext)}）</a>`).join('')}` : ''}
+          ${adaptOpts.length ? `<h5>映像のみ</h5>${adaptOpts.map(f => `<a href="/api/v1/play/${id}?itag=${f.itag}&dl=1">${f.height}p（${esc(f.ext)}）</a>`).join('')}` : ''}
+          <h5>音声のみ</h5>${audios.map(f => `<a href="/api/v1/play/${id}?itag=${f.itag}&dl=1">${esc(f.ext)} ・ ${Math.round(f.bitrate / 1000)}kbps</a>`).join('') || '<span class="cm">なし</span>'}
+        </div></div>`;
+
+    const v = $('#v'), a = $('#a'), qs = $('#qsel'), sp = $('#sp');
+    const cur = () => opts.find(x => x.itag === qs.value);
+    const audioOn = () => !cur().hasAudio && !!bestA; // 映像のみの時は音声を別ストリームで同期再生
+    let resume = 0, resumePlay = false;
+    const load = () => {
+      const f = cur();
+      v.src = `/api/v1/play/${id}?itag=${f.itag}`;
+      v.playbackRate = +sp.value;
+      if (audioOn()) {
+        a.src = `/api/v1/play/${id}?itag=${bestA.itag}`;
+        a.playbackRate = +sp.value; a.volume = v.volume; a.muted = v.muted;
+      } else { a.removeAttribute('src'); a.load(); }
+    };
+    v.addEventListener('loadedmetadata', () => {
+      if (resume) v.currentTime = resume;
+      resume = 0; v.playbackRate = +sp.value;
+      if (resumePlay) { resumePlay = false; v.play().catch(() => {}); }
+    });
+    v.addEventListener('play', () => { if (audioOn()) a.play().catch(() => {}); });
+    v.addEventListener('playing', () => { if (audioOn()) a.play().catch(() => {}); });
+    v.addEventListener('pause', () => a.pause());
+    v.addEventListener('ended', () => a.pause());
+    v.addEventListener('waiting', () => a.pause());
+    v.addEventListener('seeking', () => { a.currentTime = v.currentTime; });
+    v.addEventListener('ratechange', () => { a.playbackRate = v.playbackRate; });
+    v.addEventListener('volumechange', () => { a.volume = v.volume; a.muted = v.muted; });
+    const iv = setInterval(() => {
+      if (!v.isConnected) return clearInterval(iv);
+      if (!v.paused && audioOn() && Math.abs(a.currentTime - v.currentTime) > 0.25) a.currentTime = v.currentTime;
+    }, 300);
+    qs.onchange = () => { resume = v.currentTime; resumePlay = !v.paused; load(); };
+    sp.onchange = () => { v.playbackRate = +sp.value; a.playbackRate = +sp.value; };
+    $('#dlb').onclick = e => { e.stopPropagation(); $('#menu').hidden = !$('#menu').hidden; };
+    load();
+  }
+
+  const h = store('hist').filter(x => x.videoId !== id);
+  h.unshift({ videoId: id, title: m.title, author: m.author, authorId: m.authorId });
+  store('hist', h.slice(0, 200));
+
+  const chId = m.authorId;
+  $('#vi').innerHTML = `<div class="chrow"><a class="avb" href="${chId ? `#/channel?id=${chId}` : '#/'}">${esc(m.author)}</a>${chId ? '<button class="sub" id="sub"></button>' : ''}</div>`;
+  if (chId) {
+    const paint = () => { const on = store('subs').some(s => s.id === chId); const b = $('#sub'); b.textContent = on ? '登録済み' : '登録'; b.classList.toggle('on', on); };
+    $('#sub').onclick = () => { const s = store('subs'); const on = s.some(x => x.id === chId); store('subs', on ? s.filter(x => x.id !== chId) : [...s, { id: chId, name: m.author }]); paint(); };
+    paint();
+  }
+
+  const d = $('#desc'); d.hidden = false;
+  d.innerHTML = `<div class="dmeta">${Number(m.viewCount).toLocaleString()} 回視聴</div><div class="dtxt clamp" onclick="this.classList.toggle('clamp')">${esc(m.description)}</div>`;
+
+  $('#rel').innerHTML = (m.related || []).map(r => `<div class="rc" onclick="go('/watch?v=${r.videoId}')"><div class="rth"><img loading="lazy" src="${thumb(r.videoId)}" alt=""><span class="len">${esc(r.lengthText)}</span></div><div class="rinfo"><div class="ct2">${esc(r.title)}</div><div class="cm">${esc(r.author)}</div><div class="cm">${meta(r.viewCountText, r.publishedText)}</div></div></div>`).join('');
+
+  get(`/api/v1/comments/${id}`).then(c => {
+    if (g !== seq) return;
+    $('#cmt').innerHTML = `<h3>コメント ${c.comments.length}件</h3>` + c.comments.map(x => `<div class="cmt"><div class="av2">${esc((x.author || '?').slice(0, 1))}</div><div><div class="cm"><b>${esc(x.author)}</b> ${esc(x.publishedText)}</div><div>${esc(x.content)}</div><div class="cm">👍 ${esc(x.likeCount)}</div></div></div>`).join('');
+  }).catch(() => {});
+}
+
+async function channelPage(q) {
+  const id = q.get('id') || '', tab = q.get('tab') || 'videos', more = +(q.get('more') || 0), g = ++seq;
+  if (!id) return homePage();
+  app.innerHTML = skel(8);
+  try {
+    const d = await get(`/api/v1/channels/${encodeURIComponent(id)}?tabs=${tab}&more=${more}`);
+    if (g !== seq) return;
+    document.title = `${d.title} - NK3Tube`;
+    const items = d[tab] || [];
+    const banner = d.banner?.slice(-1)[0]?.url;
+    const av = d.avatar?.slice(-1)[0]?.url || '';
+    const on = store('subs').some(s => s.id === d.channelId);
+    const names = { videos: '動画', shorts: 'ショート', live: 'ライブ', playlists: '再生リスト' };
+    const body = tab === 'playlists' ? items.map(plcard).join('') : items.map(r => vcard(r, r.type === 'short' ? 'short' : '')).join('');
+    app.innerHTML = `
+      <div class="chead"><div class="banner" ${banner ? `style="background-image:url('${banner}')"` : ''}></div>
+        <div class="cinfo"><img class="cav" src="${esc(av)}" alt="">
+          <div><h1>${esc(d.title)}</h1><div class="cm">${meta(d.handle, d.subscriberText)}</div><div class="cm">${esc((d.description || '').slice(0, 140))}</div></div>
+          <button class="sub ${on ? 'on' : ''}" id="csub">${on ? '登録済み' : '登録'}</button></div></div>
+      ${tabsHtml(Object.entries(names), tab, k => `#/channel?id=${encodeURIComponent(id)}&tab=${k}`)}
+      ${items.length ? `<div class="grid ${tab === 'shorts' ? 'sg' : ''}">${body}</div>` : '<p>コンテンツがありません</p>'}
+      ${d[tab + 'HasMore'] ? `<div class="more"><button class="btn" onclick="go('/channel?id=${encodeURIComponent(id)}&tab=${tab}&more=${more + 1}')">もっと見る</button></div>` : ''}`;
+    $('#csub').onclick = () => {
+      const s = store('subs'), isOn = s.some(x => x.id === d.channelId);
+      store('subs', isOn ? s.filter(x => x.id !== d.channelId) : [...s, { id: d.channelId, name: d.title }]);
+      channelPage(q);
+    };
+  } catch (e) { if (g === seq) fail(e); }
+}
+
+async function shortsPage() {
+  const g = ++seq; app.innerHTML = `<h2>ショート</h2>` + skel(10);
+  try {
+    const d = await get('/api/v1/shorts'); if (g !== seq) return;
+    app.innerHTML = `<h2>ショート</h2><div class="grid sg">${d.shorts.map(s => vcard(s, 'short')).join('')}</div>`;
+  } catch (e) { if (g === seq) fail(e); }
+}
+
+function subsPage() {
+  const s = store('subs');
+  app.innerHTML = `<h2>登録チャンネル</h2>` + (s.length
+    ? s.map(c => `<a class="chc" href="#/channel?id=${encodeURIComponent(c.id)}"><div class="ct">${esc(c.name)}</div></a>`).join('')
+    : '<p>まだ登録したチャンネルはありません</p>');
+}
+
+function histPage() {
+  const h = store('hist');
+  app.innerHTML = `<h2>履歴</h2>` + (h.length
+    ? h.map(v => `<div class="row" onclick="go('/watch?v=${v.videoId}')"><div class="rth"><img src="${thumb(v.videoId)}" alt=""></div><div class="rinfo"><div class="ct2">${esc(v.title)}</div><div class="cm">${esc(v.author)}</div></div></div>`).join('')
+      + `<p><button class="btn" onclick="localStorage.removeItem('hist');route()">履歴を消去</button></p>`
+    : '<p>履歴はありません</p>');
+}
+
+const routes = { '/': homePage, '/shorts': shortsPage, '/search': searchPage, '/watch': watchPage, '/channel': channelPage, '/subs': subsPage, '/history': histPage };
+function route() {
+  const [p, qs] = (location.hash.slice(1) || '/').split('?');
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.r === p));
+  (routes[p] || homePage)(new URLSearchParams(qs || ''));
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+$('#sf').onsubmit = e => { e.preventDefault(); const t = $('#sq').value.trim(); if (t) go(`/search?q=${encodeURIComponent(t)}`); };
+route();
+</script>
+</body>
+</html>
