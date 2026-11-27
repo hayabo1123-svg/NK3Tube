@@ -1,0 +1,9 @@
+{
+  "name": "nk3tube",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NK3Tube - YouTube風の動画視聴サービス (nkdlp stream 内蔵)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" }
+}

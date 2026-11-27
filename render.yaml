@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: nk3tube
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: YTDLP_BACKEND
+        sync: false
+      - key: YTDLP_BACKEND_TOKEN
+        sync: false
